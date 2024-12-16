@@ -31,7 +31,14 @@ jobs:
         cd tickets_with_miles
         python manage.py migrate
 
-    - name: Run tests
-      run: |
-        cd tickets_with_miles
-        python manage.py test
+    - name: Run tests with coverage
+        run: |
+          cd tickets_with_miles
+          coverage run manage.py test
+          coverage xml
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./tickets_with_miles/coverage.xml
+        fail_ci_if_error: true
