@@ -32,13 +32,14 @@ jobs:
         python manage.py migrate
 
     - name: Run tests with coverage
-        run: |
-          cd tickets_with_miles
-          coverage run manage.py test
-          coverage xml
+      run: |
+        cd tickets_with_miles
+        coverage run manage.py test
+        coverage xml
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
-        files: ./tickets_with_miles/coverage.xml
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./coverage.xml
         fail_ci_if_error: true
