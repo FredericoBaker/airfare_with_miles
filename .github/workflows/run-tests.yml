@@ -48,7 +48,6 @@ jobs:
     - name: Combine & generate coverage report
       run: |
         cd tickets_with_miles
-        coverage combine
         coverage xml
 
     - name: Upload coverage to Codecov
