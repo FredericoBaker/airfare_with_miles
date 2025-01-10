@@ -10,7 +10,11 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    name: Test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
     - name: Checkout code
@@ -26,15 +30,25 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run migrations
+    - name: Migrate
       run: |
         cd tickets_with_miles
         python manage.py migrate
 
-    - name: Run tests with coverage
+    - name: Run unit tests
       run: |
         cd tickets_with_miles
-        coverage run manage.py test
+        coverage run --source=. manage.py test flights/tests/unit
+
+    - name: Run E2E tests
+      run: |
+        cd tickets_with_miles
+        coverage run --append --source=. manage.py test flights/tests/e2e
+
+    - name: Combine & generate coverage report
+      run: |
+        cd tickets_with_miles
+        coverage combine
         coverage xml
 
     - name: Upload coverage to Codecov
